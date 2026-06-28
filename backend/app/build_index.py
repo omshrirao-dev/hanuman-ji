@@ -8,6 +8,7 @@ Run after any change to data/processed/*.json:
 """
 import json
 import os
+import time
 
 from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
@@ -18,6 +19,7 @@ BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROCESSED = os.path.join(BASE, "data", "processed")
 CHROMA_DIR = os.path.join(BASE, "data", "chroma")
 EMBEDDING_MODEL = "paraphrase-multilingual-MiniLM-L12-v2"
+BATCH_SIZE = 50
 
 
 def build():
@@ -48,14 +50,18 @@ def build():
 
     gita_docs = [gita_to_document(e) for e in gita_entries]
     gita_ids = [e["id"] for e in gita_entries]
-    Chroma.from_documents(
-        documents=gita_docs,
-        ids=gita_ids,
-        embedding=embeddings,
+    gita_store = Chroma(
         collection_name="gita_shlokas",
+        embedding_function=embeddings,
         persist_directory=CHROMA_DIR,
         collection_metadata={"hnsw:space": "cosine"},
     )
+    for i in range(0, len(gita_docs), BATCH_SIZE):
+        gita_store.add_documents(
+            documents=gita_docs[i : i + BATCH_SIZE],
+            ids=gita_ids[i : i + BATCH_SIZE],
+        )
+        time.sleep(0.5)
     print(f"Embedded {len(gita_docs)} gita shlokas into collection 'gita_shlokas'")
 
 
