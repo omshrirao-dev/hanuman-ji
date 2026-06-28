@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100vh;
+  background-color: #0d0d0f;
+  color: #f5f0e8;
+  font-family: "Inter", sans-serif;
+}
+
+.font-devanagari {
+  font-family: "Noto Sans Devanagari", "Inter", sans-serif;
+}
+
+.om-watermark {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 60vh;
+  color: #ff8c1a;
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 0;
+  user-select: none;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2a30;
+  border-radius: 4px;
+}
